@@ -1,74 +1,60 @@
-(function () {
-  'use strict';
-  
-  angular.module('NarrowItDownApp', [])
-  .controller('NarrowItDownController', NarrowItDownController)
-  .service('MenuSearchService', MenuSearchService)
-  .constant('ApiBasePath', "https://coursera-jhu-default-rtdb.firebaseio.com")
-  .directive('foundItems', FoundItemsDirective);
-  
-  function FoundItemsDirective() {
-      var ddo = {
-          templateUrl: 'foundItems.html',
-          scope: {
-              items: '<',
-              onRemove: '&'
-          }
-      };
-      return ddo;
-  }
+h1 {
+  margin-bottom: 10px;
+}
+.sp-card{
+	margin-top: 32px;
+    margin-bottom: 32px;
+    padding: 16px;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+	
+}
 
-  
-  NarrowItDownController.$inject = ['MenuSearchService'];
-  function NarrowItDownController(MenuSearchService) {
-    var narrowCtrl = this;
-    narrowCtrl.searchTerm = '';
-    narrowCtrl.found = [];
-
-    narrowCtrl.search = function () {
-      narrowCtrl.found = [];
-      if (narrowCtrl.searchTerm.trim() != "") {
-          var promise = MenuSearchService.getMatchedMenuItems(narrowCtrl.searchTerm);
-          promise.then(function (result) {
-              narrowCtrl.found = result;
-              console.log(result);
-          })
-          .catch(function (error) {
-              console.log("Something went wrong: " + error);
-			  narrowCtrl.search = "Nothing found 2";
-          });
-      }
-    }
-
-    narrowCtrl.remove = function (index) {
-      narrowCtrl.found.splice(index, 1);
-    }
-  
+input[type="text"] {
+  width: 400px;
+  float: left;
+}
+.narrow-button {
+  float: left;
+  margin-left: 10px;
+}
+.loader {
+  display: none;
+  margin-left: 5px;
+  font-size: 10px;
+  float: left;
+  border-top: 1.1em solid rgba(147, 147, 147, 0.2);
+  border-right: 1.1em solid rgba(147, 147, 147, 0.2);
+  border-bottom: 1.1em solid rgba(147, 147, 147, 0.2);
+  border-left: 1.1em solid #676767;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
-  
-  
-  MenuSearchService.$inject = ['$http', 'ApiBasePath'];
-  function MenuSearchService($http, ApiBasePath) {
-    var service = this;
-  
-    service.getMatchedMenuItems = function (searchTerm) {
-      var response = $http({
-        method: "GET",
-        url: (ApiBasePath + "/menu_items.json")
-      });
-  
-      return response.then(function (result) {
-          var searchItems = [];
-          var data = result.data;
-    
-          for (var category in data) {
-              searchItems.push( data[category].menu_items.filter( item => item.description.toLowerCase().includes(searchTerm.toLowerCase()) )
-              );
-          }
-          return searchItems.flat();
-      });
-    };
-  
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
-  
-  })();
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
